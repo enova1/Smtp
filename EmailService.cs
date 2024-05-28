@@ -13,32 +13,31 @@ public class EmailService : IEmailService
 {
     public (bool,string) SendEmail(MailMessageSettings messageSettings, SmtpServerSettings smtpSettings)
     {
-        // Create a MailMessage object
-        MailMessage mailMessage = new (messageSettings.From, messageSettings.Sender)
-        {
-            To = { messageSettings.To },
-            From  = new MailAddress(messageSettings.From),
-            Sender = new MailAddress(messageSettings.Sender),
-            Subject = messageSettings.Subject,
-            Body = messageSettings.Body,
-            IsBodyHtml = messageSettings.IsBodyHtml,
-            Priority = messageSettings.Priority,
-            DeliveryNotificationOptions = messageSettings.DeliveryNotificationOptions
-        };
 
         // Create an SmtpClient object
-        SmtpClient smtpClient = new (smtpSettings.SmtpServer)
-        {
+        SmtpClient smtpClient = new()
+        { 
+            Host = smtpSettings.SmtpServer,
             Port = smtpSettings.Port,
-            Credentials = new NetworkCredential(smtpSettings.SenderEmail, smtpSettings.SenderPassword),
+            Credentials = new NetworkCredential("blackcatsystem", smtpSettings.SenderPassword),
             EnableSsl = true
         };
+        // Create a MailMessage object
+        MailMessage mailMessage = new();
+        mailMessage.To.Add(new MailAddress(messageSettings.To));
+        mailMessage.From = new MailAddress(messageSettings.From);
+        mailMessage.Sender = new MailAddress(messageSettings.Sender);
+        mailMessage.Subject = messageSettings.Subject;
+        mailMessage.Body = messageSettings.Body;
+        mailMessage.IsBodyHtml = messageSettings.IsBodyHtml;
+        mailMessage.Priority = messageSettings.Priority;
+        mailMessage.DeliveryNotificationOptions = messageSettings.DeliveryNotificationOptions;
 
         try
         {
             // Send the email
-            smtpClient.Send(mailMessage);
-            return (true, "Email sent successfully.");
+ smtpClient.Send(mailMessage);
+            return (true, "Email sent successfully");
         }
         catch (Exception ex)
         {
