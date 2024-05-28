@@ -24,7 +24,10 @@ public class EmailService : IEmailService
         };
         // Create a MailMessage object
         MailMessage mailMessage = new();
-        mailMessage.To.Add(new MailAddress(messageSettings.To));
+        foreach (var recipient in messageSettings.To.Split(',').ToList())
+        {
+            mailMessage.To.Add(new MailAddress(recipient));
+        }
         mailMessage.From = new MailAddress(messageSettings.From);
         mailMessage.Sender = new MailAddress(messageSettings.Sender);
         mailMessage.Subject = messageSettings.Subject;
@@ -36,7 +39,7 @@ public class EmailService : IEmailService
         try
         {
             // Send the email
- smtpClient.Send(mailMessage);
+smtpClient.Send(mailMessage);
             return (true, "Email sent successfully");
         }
         catch (Exception ex)
