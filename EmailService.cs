@@ -19,7 +19,7 @@ public class EmailService : IEmailService
         { 
             Host = smtpSettings.SmtpServer,
             Port = smtpSettings.Port,
-            Credentials = new NetworkCredential("blackcatsystem", smtpSettings.SenderPassword),
+            Credentials = new NetworkCredential(smtpSettings.UserName, smtpSettings.SenderPassword),
             EnableSsl = true
         };
         // Create a MailMessage object
